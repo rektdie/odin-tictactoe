@@ -59,19 +59,21 @@ let currentPlayer = player1;
 // Cell clicking functionality
 cells.forEach(cell => {
     cell.addEventListener("click", () => {
-        const cellList = [...cells];
-        const index = cellList.indexOf(cell);
+        if (gameStarted) {
+            const cellList = [...cells];
+            const index = cellList.indexOf(cell);
 
-        if (gameBoard.board[index] === ""){
-            if (currentPlayer === player1){
-                gameBoard.addMark(index, player1.mark);
-                currentPlayer = player2;
-            } else {
-                gameBoard.addMark(index, player2.mark);
-                currentPlayer = player1;
+            if (gameBoard.board[index] === ""){
+                if (currentPlayer === player1){
+                    gameBoard.addMark(index, player1.mark);
+                    currentPlayer = player2;
+                } else {
+                    gameBoard.addMark(index, player2.mark);
+                    currentPlayer = player1;
+                }
             }
-        }
 
-        console.log(gameBoard.render());
+            console.log(gameBoard.render());
+        }
     });
 });

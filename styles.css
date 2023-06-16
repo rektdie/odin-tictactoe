@@ -1,24 +1,109 @@
 body {
-    display: grid;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 50px;
     height: 100vh;
     font-family: 'Figtree', sans-serif;
+    background-color: #30323D;
 }
 
 .cell {
-    width: 80px;
-    height: 80px;
+    width: 90px;
+    height: 90px;
     background-color: grey;
     border-radius: 15px;
     display: grid;
     justify-content: center;
     align-items: center;
     font-size: 2rem;
+    transition-duration: 0.4s;
+}
+
+.cell:hover {
+    background-color: rgb(107, 105, 105);
+    transform:scale(0.9)
 }
 
 .container {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 20px;
+}
+
+.players {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+
+    color: #E8C547;
+    font-weight: 2rem;
+}
+
+.player {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.enemy {
+    display: flex;
+    gap: 30px;
+}
+
+.small-svg {
+    width: 32px;
+    height: 32px;
+}
+
+img {
+    background-color: #4D5061;
+    padding: 10px;
+    border-radius: 25%;
+    border: 1px solid transparent;
+}
+
+.enemy > img {
+    transition-duration: 0.5s;
+}
+
+.enemy > img:hover {
+    transform: scale(0.9);
+    border: 1px solid #E8C547;
+}
+
+input[type="text"] {
+    height: 80%;
+    width: 40%;
+    font-size: 2rem;
+    background-color: #52545F;
+    border: none;
+    color: white;
+    border-radius: 8px;
+    padding-left: 10px;
+}
+
+#start {
+    width: 12%;
+    background-color: #52545F;
+    color: #E8C547;
+    font-size: 2.5rem;
+    border-radius: 15px;
+    border: 1px solid transparent;
+    padding: 15px;
+    transition-duration: 0.5s;
+}
+
+#start:hover {
+    transform: scale(1.1);
+    border: 1px solid #E8C547;
+}
+
+h2 {
+    transform: rotateZ(15deg)
 }

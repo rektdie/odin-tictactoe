@@ -12,6 +12,22 @@
     <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="players">
+        <h1>Choose opponent type and give me your name(s)!</h1>
+
+        <div class="player">
+            <img src="svgs/human.svg" alt="Player" class="small-svg">
+            <input type="text" id="player1-name">
+        </div>
+        <h2>VS</h2>
+        <div class="player">
+            <div class="enemy">
+                <img src="svgs/human.svg" alt="Player" class="small-svg">
+                <img src="svgs/bot.svg" alt="AI" class="small-svg">
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="cell"></div>
         <div class="cell"></div>
@@ -23,5 +39,7 @@
         <div class="cell"></div>
         <div class="cell"></div>
     </div>
+
+    <button id="start">Start</button>
 </body>
 </html>
