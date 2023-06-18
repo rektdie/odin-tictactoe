@@ -1,7 +1,13 @@
 const cells = document.querySelectorAll(".cell");
 const startButton = document.querySelector("#start");
+const dialog = document.querySelector("dialog");
+const enemySection = document.querySelector(".enemy");
 const humanType = document.querySelector(".human")
 const botType = document.querySelector(".bot")
+
+const restartButton = document.createElement("button");
+restartButton.setAttribute("id", "restart");
+restartButton.textContent = "Restart";
 
 let gameStarted = false;
 let typeSelected = null;
@@ -10,9 +16,13 @@ let player1, player2;
 // Board object
 const gameBoard = (() => {
     let board = ["", "", "", "", "", "", "", "", ""];
+
+    const reset = () => {
+        gameBoard.board = ["", "", "", "", "", "", "", "", ""];
+    };
     
     const addMark = (index, mark) => {
-        board[index] = mark;
+        gameBoard.board[index] = mark;
     };
 
     // Rendering the board
@@ -20,15 +30,17 @@ const gameBoard = (() => {
         for (let i = 0; i < cells.length; i++) {
             if (gameBoard.board[i] !== "") {
                 cells[i].textContent = gameBoard.board[i];
+            } else {
+                cells[i].textContent = "";
             }
         }
 
         // Checking for winner
-        const turns = board.filter(mark => {
+        const turns = gameBoard.board.filter(mark => {
             return mark != "";
         }).length;
 
-        if (turns >= 5 && turns !== 9){
+        if (turns >= 5){
             const winningCombinations = [
                 [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
                 [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
@@ -38,7 +50,7 @@ const gameBoard = (() => {
             for(const combination of winningCombinations){
                 const [a, b, c] = combination;
                 
-                if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+                if (gameBoard.board[a] && gameBoard.board[a] === gameBoard.board[b] && gameBoard.board[a] === gameBoard.board[c]) {
                     if (currentPlayer === player1) {
                         return player2;
                     } else {
@@ -46,10 +58,12 @@ const gameBoard = (() => {
                     }
                 }
             }
-        } else if (turns === 9) return null;
+
+            if (turns === 9) return null;
+        }
     };
 
-    return {board, addMark, render};
+    return {board, addMark, render, reset};
 })();
 
 const Player = (name, mark) => {
@@ -73,7 +87,25 @@ cells.forEach(cell => {
                 }
             }
 
-            if (gameBoard.render() !== undefined) gameStarted = false;
+            // Announcing the winner
+            const winner = gameBoard.render();
+            const result = document.createElement("h1");
+
+            dialog.innerHTML = "";
+
+            if (winner !== undefined) {
+                gameStarted = false;
+
+                if (winner !== null) {
+                    result.textContent = `${winner.name} won the game!`;
+                } else {
+                    result.textContent = "It's a draw!";
+                }
+
+                dialog.appendChild(result);
+                dialog.append(restartButton);
+                dialog.setAttribute("open", "");
+            }
         }
     });
 });
@@ -81,13 +113,12 @@ cells.forEach(cell => {
 // Selecting human enemy type
 humanType.addEventListener("click", () => {
     if (!typeSelected) {
-        const enemySection = document.querySelector(".enemy");
         const textInput = document.createElement("input");
     
         textInput.setAttribute("type", "text");
         textInput.setAttribute("id", "player2-name");
-    
-        botType.remove();
+
+        enemySection.removeChild(botType);
         enemySection.appendChild(textInput);
         humanType.classList.remove("clickable");
 
@@ -104,6 +135,7 @@ botType.addEventListener("click", () => {
     }
 });
 
+// Starting the game
 startButton.addEventListener("click", () => {
     if (!gameStarted){
         const input1 = document.querySelector("#player1-name");
@@ -118,6 +150,21 @@ startButton.addEventListener("click", () => {
     
         currentPlayer = player1;
         gameStarted = true;
-        console.log(player1, player2);
     }
+});
+
+// Clear everything
+restartButton.addEventListener("click", () => {
+    dialog.removeAttribute("open");
+    gameBoard.reset();
+    document.querySelector("#player1-name").value = "";
+
+    if (typeSelected === "human") document.querySelector("#player2-name").remove();
+
+    player1, player2 = null;
+    typeSelected = null;
+    humanType.classList.add("clickable");
+    enemySection.appendChild(botType);
+
+    gameBoard.render();
 });

@@ -20,6 +20,7 @@ body {
     align-items: center;
     font-size: 2rem;
     transition-duration: 0.4s;
+    color: white;
 }
 
 .cell:hover {
@@ -106,6 +107,36 @@ input[type="text"] {
     border: 1px solid #E8C547;
 }
 
+#restart {
+    width: 50%;
+    background-color: #4D5061;
+    color: #E8C547;
+    font-size: 2.5rem;
+    border-radius: 15px;
+    border: 1px solid transparent;
+    padding: 15px;
+    transition-duration: 0.5s;
+}
+
+#restart:hover {
+    transform: scale(0.9);
+    border: 1px solid #E8C547;
+}
+
 h2 {
     transform: rotateZ(15deg);
+}
+
+dialog[open] {
+    background-color:#52545F;
+    color: #E8C547;
+    padding: 2%;
+    font-size: 1.7rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+    border-radius: 15px;
+    min-width: 350px;
 }
