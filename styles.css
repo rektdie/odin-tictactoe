@@ -21,6 +21,7 @@ body {
     font-size: 2rem;
     transition-duration: 0.4s;
     color: white;
+    transition-property: transform;
 }
 
 .cell:hover {
@@ -139,4 +140,8 @@ dialog[open] {
     z-index: 1;
     border-radius: 15px;
     min-width: 350px;
+}
+
+.selected {
+    border: 1px solid #E8C547;
 }

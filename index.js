@@ -29,7 +29,14 @@ const gameBoard = (() => {
     const render = () => {
         for (let i = 0; i < cells.length; i++) {
             if (gameBoard.board[i] !== "") {
-                cells[i].textContent = gameBoard.board[i];
+                const current = cells[i];
+                current.textContent = gameBoard.board[i];
+
+                if (current.textContent === "X"){
+                    current.style.color = "#F5D547";
+                } else if (current.textContent === "O"){
+                    current.style.color = "#DB3069";
+                }
             } else {
                 cells[i].textContent = "";
             }
@@ -112,27 +119,26 @@ cells.forEach(cell => {
 
 // Selecting human enemy type
 humanType.addEventListener("click", () => {
-    if (!typeSelected) {
-        const textInput = document.createElement("input");
-    
-        textInput.setAttribute("type", "text");
-        textInput.setAttribute("id", "player2-name");
+    const textInput = document.createElement("input");
 
-        enemySection.removeChild(botType);
-        enemySection.appendChild(textInput);
-        humanType.classList.remove("clickable");
+    textInput.setAttribute("type", "text");
+    textInput.setAttribute("id", "player2-name");
 
-        typeSelected = "human";
-    }
+    enemySection.removeChild(botType);
+    enemySection.appendChild(textInput);
+    botType.classList.remove("selected");
+    humanType.classList.add("selected");
+    humanType.classList.remove("clickable");
+
+    typeSelected = "human";
 });
 
 // Selecting bot enemy type
 botType.addEventListener("click", () => {
-    if (!typeSelected){
-        botType.style.border = "1px solid #E8C547";
-        botType.classList.remove("clickable");
-        typeSelected = "bot";
-    }
+    humanType.classList.remove("selected");
+    botType.classList.add("selected");
+    botType.classList.remove("clickable");
+    typeSelected = "bot";
 });
 
 // Starting the game
@@ -144,12 +150,18 @@ startButton.addEventListener("click", () => {
         if (typeSelected === "human") {
             const input2 = document.querySelector("#player2-name");
             player2 = Player(input2.value, "O");
-        } else {
+        } else if (typeSelected === "bot"){
             player2 = Player("AI", "O");
+        } else {
+            return;
         }
-    
-        currentPlayer = player1;
-        gameStarted = true;
+
+        if (player1.name !== "" && player2.name !== ""){
+            currentPlayer = player1;
+            gameStarted = true;
+            startButton.textContent = "Started";
+            startButton.style.color = "#49A078";
+        }
     }
 });
 
@@ -164,7 +176,12 @@ restartButton.addEventListener("click", () => {
     player1, player2 = null;
     typeSelected = null;
     humanType.classList.add("clickable");
+    botType.classList.add("clickable");
+    humanType.classList.remove("selected");
+    botType.classList.remove("selected");
     enemySection.appendChild(botType);
+    startButton.textContent = "Start";
+    startButton.style.color = "#E8C547";
 
     gameBoard.render();
 });
