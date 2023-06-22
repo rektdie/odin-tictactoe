@@ -11,7 +11,7 @@ restartButton.textContent = "Restart";
 
 let gameStarted = false;
 let typeSelected = null;
-let player1, player2;
+let player1, player2, currentPlayer;
 
 // Board object
 const gameBoard = (() => {
@@ -24,6 +24,47 @@ const gameBoard = (() => {
     const addMark = (index, mark) => {
         gameBoard.board[index] = mark;
     };
+
+    let emptyIndexes = [];
+
+    // Checking for winner
+    function CheckWinner(board){
+        const turns = board.filter(mark => {
+            return mark !== "";
+        }).length;
+
+        gameBoard.emptyIndexes = [];
+        let clonedBoard = [...board];
+        for (element of clonedBoard){
+            if (element === ""){
+                const index = clonedBoard.indexOf(element);
+                gameBoard.emptyIndexes.push(index);
+                clonedBoard[index] = "checked";
+            }
+        }
+
+        if (turns >= 5){
+            const winningCombinations = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+                [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+                [0, 4, 8], [2, 4, 6] // Diagonals
+            ];
+
+            for(const combination of winningCombinations){
+                const [a, b, c] = combination;
+                
+                if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+                    if (currentPlayer === player1) {
+                        return player2;
+                    } else {
+                        return player1;
+                    }
+                }
+            }
+
+            if (turns === 9) return null;
+        }
+    }
 
     // Rendering the board
     const render = () => {
@@ -41,36 +82,9 @@ const gameBoard = (() => {
                 cells[i].textContent = "";
             }
         }
-
-        // Checking for winner
-        const turns = gameBoard.board.filter(mark => {
-            return mark != "";
-        }).length;
-
-        if (turns >= 5){
-            const winningCombinations = [
-                [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
-                [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
-                [0, 4, 8], [2, 4, 6] // Diagonals
-            ];
-
-            for(const combination of winningCombinations){
-                const [a, b, c] = combination;
-                
-                if (gameBoard.board[a] && gameBoard.board[a] === gameBoard.board[b] && gameBoard.board[a] === gameBoard.board[c]) {
-                    if (currentPlayer === player1) {
-                        return player2;
-                    } else {
-                        return player1;
-                    }
-                }
-            }
-
-            if (turns === 9) return null;
-        }
     };
 
-    return {board, addMark, render, reset};
+    return {board, addMark, render, reset, emptyIndexes, CheckWinner};
 })();
 
 const Player = (name, mark) => {
@@ -88,14 +102,25 @@ cells.forEach(cell => {
                 if (currentPlayer === player1){
                     gameBoard.addMark(index, player1.mark);
                     currentPlayer = player2;
+                    
+                    const winning = gameBoard.CheckWinner(gameBoard.board)
+                    if (winning === undefined) {
+                        if (typeSelected === "bot") {
+                            gameBoard.CheckWinner(gameBoard.board);
+                            const randomIndex = gameBoard.emptyIndexes[Math.floor(Math.random() * gameBoard.emptyIndexes.length)];
+                            gameBoard.addMark(randomIndex, player2.mark);
+                            currentPlayer = player1;
+                        }
+                    }
                 } else {
                     gameBoard.addMark(index, player2.mark);
                     currentPlayer = player1;
                 }
             }
 
+            gameBoard.render();
             // Announcing the winner
-            const winner = gameBoard.render();
+            const winner = gameBoard.CheckWinner(gameBoard.board);
             const result = document.createElement("h1");
 
             dialog.innerHTML = "";
@@ -175,6 +200,7 @@ restartButton.addEventListener("click", () => {
 
     player1, player2 = null;
     typeSelected = null;
+    currentPlayer = undefined;
     humanType.classList.add("clickable");
     botType.classList.add("clickable");
     humanType.classList.remove("selected");

@@ -140,6 +140,8 @@ dialog[open] {
     z-index: 1;
     border-radius: 15px;
     min-width: 350px;
+    position: absolute;
+    top: 10%;
 }
 
 .selected {
